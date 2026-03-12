@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Shared Prescription{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-1">Shared Prescription</h2>
+    <p class="text-muted mb-0">This page can be accessed by anyone with the share link.</p>
+  </div>
+  {% if current_user.is_authenticated %}
+    <a class="btn btn-outline-secondary" href="{{ url_for('dashboard') }}">Dashboard</a>
+  {% else %}
+    <a class="btn btn-outline-secondary" href="{{ url_for('login') }}">Login</a>
+  {% endif %}
+</div>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span>Prescription #{{ prescription.prescription_id }}</span>
+    <span class="badge text-bg-secondary">Diagnosis #{{ diagnosis.diagnosis_id }}</span>
+  </div>
+  <div class="card-body">
+    <div class="row g-2 mb-3">
+      <div class="col-md-6"><strong>Patient:</strong> {{ diagnosis.patient.first_name }} {{ diagnosis.patient.last_name }}</div>
+      <div class="col-md-6"><strong>Doctor:</strong> Dr. {{ diagnosis.doctor.first_name }} {{ diagnosis.doctor.last_name }}</div>
+      <div class="col-md-6"><strong>Date:</strong> {{ diagnosis.date.strftime('%Y-%m-%d') }}</div>
+      <div class="col-md-6"><strong>Patient ID:</strong> {{ diagnosis.patient_id }}</div>
+      <div class="col-12"><strong>Summary:</strong> {{ diagnosis.summary }}</div>
+    </div>
+
+    <h6 class="border-bottom pb-2">Medicines</h6>
+    <div class="table-responsive">
+      <table class="table table-sm table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Instructions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for med in prescription.medicines %}
+            <tr>
+              <td>{{ med.med_name }}</td>
+              <td>{{ med.dosage }}</td>
+              <td>{{ med.instructions }}</td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="3" class="text-muted">No medicines added yet.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

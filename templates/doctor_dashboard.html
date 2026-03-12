@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="mb-1">Doctor Dashboard</h2>
+    <p class="text-muted mb-0">Welcome, Dr. {{ current_user.first_name }} {{ current_user.last_name }}</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Search Patient</h5>
+        <form method="post" action="{{ url_for('search_patient_form') }}">
+          <div class="mb-3">
+            <label class="form-label">Patient ID</label>
+            <input type="number" class="form-control" name="patient_id" required>
+            <div class="form-text">Patients can find this on their dashboard as "Patient ID".</div>
+          </div>
+          <button class="btn btn-primary w-100" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Create Diagnosis</h5>
+        <form method="post" action="{{ url_for('create_diagnosis') }}">
+          <div class="mb-3">
+            <label class="form-label">Patient ID</label>
+            <input type="number" class="form-control" name="patient_id" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Date</label>
+            <input type="date" class="form-control" name="date">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Summary</label>
+            <textarea class="form-control" name="summary" rows="4" required></textarea>
+          </div>
+          <button class="btn btn-success w-100" type="submit">Create Diagnosis</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Recent Diagnoses</h5>
+        {% if diagnoses %}
+          <div class="accordion" id="diagnosisAccordion">
+            {% for d in diagnoses %}
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#diag{{ d.diagnosis_id }}">
+                    #{{ d.diagnosis_id }} | Patient {{ d.patient_id }} | {{ d.date.strftime('%Y-%m-%d') }}
+                  </button>
+                </h2>
+                <div id="diag{{ d.diagnosis_id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" data-bs-parent="#diagnosisAccordion">
+                  <div class="accordion-body">
+                    <p>{{ d.summary }}</p>
+
+                    {% if d.prescription %}
+                      <div class="alert alert-secondary py-2">Prescription #{{ d.prescription.prescription_id }} exists</div>
+                      <form method="post" action="{{ url_for('add_medicine', prescription_id=d.prescription.prescription_id) }}">
+                        <div class="row g-2">
+                          <div class="col-md-4"><input class="form-control" name="med_name" placeholder="Medicine" required></div>
+                          <div class="col-md-3"><input class="form-control" name="dosage" placeholder="Dosage" required></div>
+                          <div class="col-md-5"><input class="form-control" name="instructions" placeholder="Instructions" required></div>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm mt-2" type="submit">Add Medicine</button>
+                      </form>
+                    {% else %}
+                      <form method="post" action="{{ url_for('add_prescription', diagnosis_id=d.diagnosis_id) }}">
+                        <button class="btn btn-outline-success btn-sm" type="submit">Create Prescription</button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-muted mb-0">No diagnoses created yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

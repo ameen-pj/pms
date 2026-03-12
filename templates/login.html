@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}PMS Login{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h3 class="card-title mb-3">Prescription Management Login</h3>
+        <form method="post">
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input name="email" type="email" class="form-control" value="{{ prefill_email or '' }}" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input name="password" type="text" class="form-control" value="{{ prefill_password or '' }}" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+
+        <div class="d-flex gap-2 mt-3">
+          <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('login', role='doctor') }}">Prefill Doctor</a>
+          <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('login', role='patient') }}">Prefill Patient</a>
+        </div>
+
+        <div class="text-center mt-3">
+          <span class="text-muted">No account?</span>
+          <a href="{{ url_for('register') }}">Register here</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

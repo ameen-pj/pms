@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Details{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2 class="mb-0">Patient #{{ patient.user_id }}</h2>
+  <a class="btn btn-outline-secondary" href="{{ url_for('dashboard') }}">Back</a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6"><strong>Name:</strong> {{ patient.first_name }} {{ patient.last_name }}</div>
+      <div class="col-md-6"><strong>Email:</strong> {{ patient.email }}</div>
+      <div class="col-md-4"><strong>DOB:</strong> {{ patient.dob.strftime('%Y-%m-%d') }}</div>
+      <div class="col-md-4"><strong>Age:</strong> {{ patient.age }}</div>
+      <div class="col-md-4"><strong>Phone:</strong> {{ patient.phone_no }}</div>
+      <div class="col-12">
+        <strong>Address:</strong>
+        {{ patient.street }}, {{ patient.locality }}, {{ patient.city }}, {{ patient.state }} - {{ patient.pincode }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

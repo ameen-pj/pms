@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}PMS Register{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h3 class="card-title mb-3">Create PMS Account</h3>
+        <form method="post" id="registerForm">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Role</label>
+              <select class="form-select" name="role" id="role" required>
+                <option value="">Select role</option>
+                <option value="doctor">Doctor</option>
+                <option value="patient">Patient</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">First Name</label>
+              <input class="form-control" name="first_name" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Last Name</label>
+              <input class="form-control" name="last_name" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-control" name="password" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" name="confirm_password" required>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <div id="doctorFields" class="d-none">
+            <h5 class="mb-3">Doctor Details</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Specialization</label>
+                <input class="form-control doctor-input" name="specialization">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Hospital Name</label>
+                <input class="form-control doctor-input" name="hospital_name">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Office Phone</label>
+                <input class="form-control doctor-input" name="office_phno">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Personal Phone</label>
+                <input class="form-control doctor-input" name="personal_phno">
+              </div>
+            </div>
+          </div>
+
+          <div id="patientFields" class="d-none">
+            <h5 class="mb-3">Patient Details</h5>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">DOB</label>
+                <input type="date" class="form-control patient-input" name="dob">
+              </div>
+              <div class="col-md-8">
+                <label class="form-label">Phone Number</label>
+                <input class="form-control patient-input" name="phone_no">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Street</label>
+                <input class="form-control patient-input" name="street">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">City</label>
+                <input class="form-control patient-input" name="city">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Locality</label>
+                <input class="form-control patient-input" name="locality">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">State</label>
+                <input class="form-control patient-input" name="state">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label">Pincode</label>
+                <input class="form-control patient-input" name="pincode">
+              </div>
+            </div>
+          </div>
+
+          <div class="d-grid mt-4">
+            <button type="submit" class="btn btn-success">Create Account</button>
+          </div>
+        </form>
+
+        <div class="text-center mt-3">
+          <a href="{{ url_for('login') }}">Back to login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const roleSelect = document.getElementById('role');
+  const doctorFields = document.getElementById('doctorFields');
+  const patientFields = document.getElementById('patientFields');
+  const doctorInputs = document.querySelectorAll('.doctor-input');
+  const patientInputs = document.querySelectorAll('.patient-input');
+
+  function updateRoleFields() {
+    const role = roleSelect.value;
+    const isDoctor = role === 'doctor';
+    const isPatient = role === 'patient';
+
+    doctorFields.classList.toggle('d-none', !isDoctor);
+    patientFields.classList.toggle('d-none', !isPatient);
+
+    doctorInputs.forEach((input) => {
+      input.required = isDoctor;
+    });
+
+    patientInputs.forEach((input) => {
+      input.required = isPatient;
+    });
+  }
+
+  roleSelect.addEventListener('change', updateRoleFields);
+  updateRoleFields();
+</script>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Diagnosis Details{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-0">Diagnosis #{{ diagnosis.diagnosis_id }}</h2>
+    <p class="mb-0 mt-1"><span class="badge text-bg-primary">Patient ID: {{ diagnosis.patient_id }}</span></p>
+  </div>
+  <a class="btn btn-outline-secondary" href="{{ url_for('view_all_diagnosis') }}">Back to History</a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span>Dr. {{ diagnosis.doctor.first_name }} {{ diagnosis.doctor.last_name }}</span>
+    <span class="badge text-bg-secondary">{{ diagnosis.date.strftime('%Y-%m-%d') }}</span>
+  </div>
+  <div class="card-body">
+    <p class="mb-3"><strong>Summary:</strong> {{ diagnosis.summary }}</p>
+
+    <h6 class="border-bottom pb-2">Prescription</h6>
+    {% if diagnosis.prescription %}
+      <p class="text-muted">Prescription ID: {{ diagnosis.prescription.prescription_id }}</p>
+      {% if share_url %}
+        <div class="border rounded p-3 mb-3 bg-light">
+          <h6 class="mb-2">Share Prescription</h6>
+          <p class="small text-muted mb-2">Scan this QR code to open a public prescription page.</p>
+          <div class="row g-3 align-items-center">
+            <div class="col-md-4 text-center">
+              <img
+                src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data={{ share_url|urlencode }}"
+                alt="Prescription share QR code"
+                class="img-fluid border rounded"
+              >
+            </div>
+            <div class="col-md-8">
+              <label class="form-label small mb-1">Share Link</label>
+              <input class="form-control form-control-sm" type="text" value="{{ share_url }}" readonly>
+              <a class="btn btn-sm btn-outline-primary mt-2" href="{{ share_url }}" target="_blank" rel="noopener noreferrer">Open Public Page</a>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      <div class="table-responsive">
+        <table class="table table-sm table-striped">
+          <thead>
+            <tr>
+              <th>Medicine</th>
+              <th>Dosage</th>
+              <th>Instructions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for med in diagnosis.prescription.medicines %}
+              <tr>
+                <td>{{ med.med_name }}</td>
+                <td>{{ med.dosage }}</td>
+                <td>{{ med.instructions }}</td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="3" class="text-muted">No medicines added yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">No prescription added yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

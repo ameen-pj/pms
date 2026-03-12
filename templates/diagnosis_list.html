@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Diagnosis History{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-0">My Diagnosis History</h2>
+    <p class="mb-0 mt-1"><span class="badge text-bg-primary">Patient ID: {{ current_user.user_id }}</span></p>
+  </div>
+  <a class="btn btn-outline-secondary" href="{{ url_for('dashboard') }}">Back</a>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    {% if diagnoses %}
+      <div class="list-group">
+        {% for d in diagnoses %}
+          <a class="list-group-item list-group-item-action" href="{{ url_for('view_diagnosis', diagnosis_id=d.diagnosis_id) }}">
+            <div class="d-flex justify-content-between">
+              <strong>Diagnosis #{{ d.diagnosis_id }}</strong>
+              <span>{{ d.date.strftime('%Y-%m-%d') }}</span>
+            </div>
+            <div class="text-muted small">Dr. {{ d.doctor.first_name }} {{ d.doctor.last_name }}</div>
+            <div>{{ d.summary }}</div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-muted mb-0">No diagnosis records found.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
