@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from datetime import datetime
 from functools import wraps
 
@@ -434,8 +435,7 @@ def not_found(error):
     return render_template("error.html", code=404, message=getattr(error, "description", "Not found")), 404
 
 
-@app.cli.command("seed-data")
-def seed_data():
+def ensure_default_seed_data() -> None:
     if PMSUser.query.count() > 0:
         return
 
@@ -470,9 +470,27 @@ def seed_data():
     db.session.commit()
 
 
+@app.cli.command("seed-data")
+def seed_data():
+    ensure_default_seed_data()
+
+
 with app.app_context():
     db.create_all()
 
 
+def reset_database_on_startup() -> None:
+    """Reset all persisted data for each app restart in local development."""
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+        ensure_default_seed_data()
+
+
 if __name__ == "__main__":
+    # In debug mode with reloader, run reset only in the serving child process.
+    is_reloader_child = os.environ.get("WERKZEUG_RUN_MAIN") == "true"
+    if not app.debug or is_reloader_child:
+        reset_database_on_startup()
+
     app.run(host="0.0.0.0", debug=True)
